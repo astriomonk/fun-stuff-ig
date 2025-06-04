@@ -1,672 +1,450 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🖥️ High-Tech Fun Hub</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fun Tech Terminal + Animations</title>
+<style>
+  /* Reset & basics */
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    background: black;
+    color: #0f0;
+    font-family: monospace, monospace;
+    overflow: hidden;
+  }
+  #container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  header {
+    background: #111;
+    display: flex;
+    gap: 10px;
+    padding: 5px 10px;
+  }
+  button.tab-button {
+    background: #222;
+    color: #0f0;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    user-select: none;
+    transition: background-color 0.3s;
+  }
+  button.tab-button.active, button.tab-button:hover {
+    background: #0f0;
+    color: black;
+  }
+  main {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  .activity {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .activity.active {
+    display: block;
+  }
 
-    /* Reset and base */
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      font-family: 'Share Tech Mono', monospace;
-      color: #00ffea;
-      user-select: none;
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      padding: 15px;
-      font-size: 2rem;
-      text-align: center;
-      letter-spacing: 3px;
-      text-shadow:
-        0 0 5px #00ffd6,
-        0 0 10px #00ffd6,
-        0 0 20px #00ffd6,
-        0 0 40px #00ffd6;
-      background: #011e27;
-      user-select: none;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background: #022934;
-      border-bottom: 1px solid #00ffea66;
-      user-select: none;
-    }
-    nav button {
-      background: transparent;
-      border: none;
-      color: #00ffeaaa;
-      padding: 14px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: color 0.3s;
-      font-weight: bold;
-      letter-spacing: 1.2px;
-      outline-offset: 2px;
-    }
-    nav button:hover, nav button:focus {
-      color: #00ffff;
-      outline: none;
-    }
-    nav button.active {
-      color: #00ffff;
-      border-bottom: 2px solid #00ffff;
-    }
+  /* Terminal */
+  #terminal {
+    background: black;
+    color: #0f0;
+    overflow-y: auto;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  #terminal-output {
+    white-space: pre-wrap;
+    min-height: 80%;
+  }
+  #terminal-input {
+    width: 100%;
+    background: black;
+    border: none;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 16px;
+    padding: 6px;
+    box-sizing: border-box;
+  }
+  #terminal-input:focus {
+    outline: none;
+  }
 
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 15px;
-      background: #011e27;
-      overflow: hidden;
-    }
+  /* Matrix canvas */
+  #matrix-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: black;
+  }
 
-    section {
-      width: 90vw;
-      max-width: 900px;
-      height: 70vh;
-      border-radius: 10px;
-      background: #021c27;
-      box-shadow:
-        0 0 15px #00ffea,
-        inset 0 0 20px #00ffea;
-      padding: 20px;
-      display: none;
-      flex-direction: column;
-      color: #00ffea;
-      position: relative;
-    }
-    section.active {
-      display: flex;
-    }
+  /* Starfield canvas */
+  #starfield-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: black;
+  }
 
-    /* Terminal Styles */
-    #terminal #terminal-output {
-      flex: 1;
-      background: #021c27;
-      border-radius: 8px;
-      padding: 15px;
-      font-size: 1.1rem;
-      overflow-y: auto;
-      color: #00ffea;
-      text-shadow:
-        0 0 4px #00ffea,
-        0 0 8px #00ffea;
-      line-height: 1.4;
-      white-space: pre-wrap;
-      box-shadow: inset 0 0 8px #00ffea;
-      margin-bottom: 10px;
-    }
-    #terminal #input-line {
-      display: flex;
-      align-items: center;
-    }
-    #terminal #prompt {
-      font-weight: bold;
-      margin-right: 10px;
-      color: #00ffd6;
-      text-shadow: 0 0 6px #00ffd6;
-    }
-    #terminal #command-input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: #00ffc4;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1.1rem;
-      outline: none;
-      border-bottom: 1px solid #00ffea;
-      padding: 5px 8px;
-      transition: border-color 0.3s ease;
-    }
-    #terminal #command-input:focus {
-      border-color: #00ffff;
-      box-shadow: 0 0 10px #00ffff;
-    }
+  /* Glitch text */
+  #glitch-textarea {
+    width: 100%;
+    height: 70%;
+    background: black;
+    color: #0f0;
+    border: 1px solid #0f0;
+    font-family: monospace;
+    font-size: 18px;
+    resize: none;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  #glitch-output {
+    margin-top: 10px;
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 22px;
+    color: #0f0;
+    min-height: 100px;
+  }
 
-    /* Matrix Rain */
-    #matrix-canvas {
-      width: 100%;
-      height: 100%;
-      background: black;
-      border-radius: 10px;
-      display: block;
-    }
+  /* Color pulse controls */
+  #color-controls {
+    margin-top: 15px;
+    color: #0f0;
+  }
+  #color-controls label {
+    display: block;
+    margin-bottom: 4px;
+  }
+  #color-controls input[type="range"] {
+    width: 100%;
+  }
 
-    /* Starfield */
-    #starfield-canvas {
-      width: 100%;
-      height: 100%;
-      background: black;
-      border-radius: 10px;
-      display: block;
-      cursor: crosshair;
-    }
-
-    /* Glitch Text */
-    #glitch-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      font-size: 1.6rem;
-      user-select: text;
-    }
-    #glitch-input {
-      width: 80%;
-      max-width: 600px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1.2rem;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #00ffea;
-      background: transparent;
-      color: #00ffea;
-      margin-bottom: 15px;
-      outline: none;
-      text-shadow:
-        0 0 5px #00ffea,
-        0 0 10px #00ffea;
-    }
-    #glitch-output {
-      font-weight: bold;
-      white-space: pre-wrap;
-      max-width: 600px;
-      color: #00ffea;
-      text-shadow:
-        0 0 5px #00ffea,
-        0 0 10px #00ffea;
-    }
-
-    /* Color Pulse */
-    #color-pulse-controls {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 15px;
-      color: #00ffea;
-    }
-    #color-pulse-controls label {
-      font-size: 1rem;
-      margin-bottom: 5px;
-      user-select: none;
-    }
-    #color-pulse-controls input[type=range] {
-      -webkit-appearance: none;
-      width: 300px;
-      height: 6px;
-      border-radius: 3px;
-      background: #00353d;
-      outline: none;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
-    #color-pulse-controls input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      background: #00ffea;
-      cursor: pointer;
-      border-radius: 50%;
-      border: 2px solid #00ffff;
-      transition: background 0.3s ease;
-    }
-    #color-pulse-controls input[type=range]:hover::-webkit-slider-thumb {
-      background: #00ffff;
-    }
-
-    /* Glitch animation for header */
-    .glitch {
-      position: relative;
-      color: #00ffea;
-      animation: glitch 2s infinite;
-      user-select: none;
-    }
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-    }
-    .glitch::before {
-      animation: glitchTop 2s infinite;
-      clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
-      color: #00ffff;
-      left: 2px;
-      text-shadow: -2px 0 #00ffff;
-      opacity: 0.8;
-    }
-    .glitch::after {
-      animation: glitchBot 2s infinite;
-      clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-      color: #00ff6a;
-      left: -2px;
-      text-shadow: 2px 0 #00ff6a;
-      opacity: 0.8;
-    }
-    @keyframes glitch {
-      0%, 100% {
-        text-shadow:
-          0 0 4px #00ffea,
-          0 0 8px #00ffea,
-          0 0 20px #00ffea;
-      }
-      50% {
-        text-shadow:
-          0 0 10px #00fff5,
-          0 0 30px #00fff5;
-      }
-    }
-    @keyframes glitchTop {
-      0%, 100% { transform: translate(0); }
-      20% { transform: translate(-2px, -2px); }
-      40% { transform: translate(-2px, 2px); }
-      60% { transform: translate(2px, -2px); }
-      80% { transform: translate(2px, 2px); }
-    }
-    @keyframes glitchBot {
-      0%, 100% { transform: translate(0); }
-      20% { transform: translate(2px, 2px); }
-      40% { transform: translate(2px, -2px); }
-      60% { transform: translate(-2px, 2px); }
-      80% { transform: translate(-2px, -2px); }
-    }
-
-  </style>
+</style>
 </head>
 <body>
 
-<header class="glitch" data-text="HIGH-TECH FUN HUB">HIGH-TECH FUN HUB</header>
+<div id="container">
+  <header>
+    <button class="tab-button active" data-target="terminal">Terminal</button>
+    <button class="tab-button" data-target="matrix">Matrix Rain</button>
+    <button class="tab-button" data-target="starfield">Starfield</button>
+    <button class="tab-button" data-target="glitch">Glitch Text</button>
+  </header>
+  <main>
+    <!-- Terminal -->
+    <section id="terminal" class="activity active" tabindex="0">
+      <div id="terminal-output"></div>
+      <input id="terminal-input" autocomplete="off" placeholder="Enter command..." />
+    </section>
 
-<nav role="tablist" aria-label="Activity Tabs">
-  <button role="tab" aria-selected="true" aria-controls="terminal" id="tab-terminal" class="active">Terminal</button>
-  <button role="tab" aria-selected="false" aria-controls="matrix" id="tab-matrix">Matrix Rain</button>
-  <button role="tab" aria-selected="false" aria-controls="starfield" id="tab-starfield">Starfield</button>
-  <button role="tab" aria-selected="false" aria-controls="glitch" id="tab-glitch">Glitch Text</button>
-  <button role="tab" aria-selected="false" aria-controls="colorpulse" id="tab-colorpulse">Color Pulse</button>
-</nav>
+    <!-- Matrix Rain -->
+    <section id="matrix" class="activity">
+      <canvas id="matrix-canvas"></canvas>
+    </section>
 
-<main>
-  <!-- Terminal Section -->
-  <section id="terminal" role="tabpanel" aria-labelledby="tab-terminal" class="active">
-    <div id="terminal-output" aria-live="polite" aria-atomic="false" aria-relevant="additions" tabindex="0" aria-label="Terminal output">
-      Welcome to the High-Tech Fun Terminal. Type <code>help</code> to get started.
-    </div>
-    <div id="input-line">
-      <div id="prompt">&gt;&gt;&gt;</div>
-      <input type="text" id="command-input" autocomplete="off" aria-label="Command input" autofocus />
-    </div>
-  </section>
+    <!-- Starfield -->
+    <section id="starfield" class="activity">
+      <canvas id="starfield-canvas"></canvas>
+      <div id="color-controls">
+        <label>Hue: <span id="hue-val">180</span></label>
+        <input type="range" id="hue-range" min="0" max="360" value="180" />
+        <label>Saturation (%): <span id="sat-val">100</span></label>
+        <input type="range" id="sat-range" min="0" max="100" value="100" />
+        <label>Lightness (%): <span id="light-val">20</span></label>
+        <input type="range" id="light-range" min="0" max="100" value="20" />
+        <label>Pulse Speed: <span id="speed-val">2</span></label>
+        <input type="range" id="speed-range" min="0" max="10" step="0.1" value="2" />
+      </div>
+    </section>
 
-  <!-- Matrix Rain -->
-  <section id="matrix" role="tabpanel" aria-labelledby="tab-matrix">
-    <canvas id="matrix-canvas" aria-label="Matrix rain animation"></canvas>
-  </section>
-
-  <!-- Starfield -->
-  <section id="starfield" role="tabpanel" aria-labelledby="tab-starfield">
-    <canvas id="starfield-canvas" aria-label="Starfield animation"></canvas>
-    <div style="color:#00ffea; font-size: 0.9rem; padding: 10px; text-align:center; user-select:none;">
-      Use mouse or arrow keys to steer stars.
-    </div>
-  </section>
-
-  <!-- Glitch Text -->
-  <section id="glitch" role="tabpanel" aria-labelledby="tab-glitch" >
-    <div id="glitch-container">
-      <input type="text" id="glitch-input" placeholder="Type your text here..." aria-label="Glitch text input"/>
-      <pre id="glitch-output" aria-live="polite"></pre>
-    </div>
-  </section>
-
-  <!-- Color Pulse -->
-  <section id="colorpulse" role="tabpanel" aria-labelledby="tab-colorpulse">
-    <div id="color-pulse-controls" aria-label="Background color pulse controls">
-      <label for="hue-range">Hue (Color Tone): <span id="hue-val">180</span>°</label>
-      <input type="range" id="hue-range" min="0" max="360" value="180" />
-      <label for="saturation-range">Saturation: <span id="sat-val">70</span>%</label>
-      <input type="range" id="saturation-range" min="0" max="100" value="70" />
-      <label for="lightness-range">Lightness: <span id="light-val">20</span>%</label>
-      <input type="range" id="lightness-range" min="0" max="100" value="20" />
-      <label for="speed-range">Pulse Speed: <span id="speed-val">3</span></label>
-      <input type="range" id="speed-range" min="1" max="10" value="3" />
-    </div>
-  </section>
-</main>
+    <!-- Glitch Text -->
+    <section id="glitch" class="activity">
+      <textarea id="glitch-textarea" placeholder="Type something to glitch it..."></textarea>
+      <pre id="glitch-output"></pre>
+    </section>
+  </main>
+</div>
 
 <script>
-  (() => {
-    // Tab navigation logic
-    const tabs = document.querySelectorAll('nav button[role="tab"]');
-    const panels = document.querySelectorAll('main > section[role="tabpanel"]');
+(() => {
+  // Tab switching
+  const tabs = document.querySelectorAll('.tab-button');
+  const activities = document.querySelectorAll('.activity');
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        // Deactivate all tabs
-        tabs.forEach(t => {
-          t.classList.remove('active');
-          t.setAttribute('aria-selected', 'false');
-        });
-        // Hide all panels
-        panels.forEach(p => p.classList.remove('active'));
-        // Activate clicked tab & panel
-        tab.classList.add('active');
-        tab.setAttribute('aria-selected', 'true');
-        document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
-        // Focus input on terminal if terminal tab selected
-        if(tab.id === 'tab-terminal'){
-          setTimeout(() => {
-            document.getElementById('command-input').focus();
-          }, 150);
-        }
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.getAttribute('data-target');
+      // Show target activity, hide others
+      activities.forEach(act => {
+        act.classList.toggle('active', act.id === target);
       });
+      // Highlight active tab
+      tabs.forEach(t => t.classList.toggle('active', t === tab));
     });
+  });
 
-    /* ====================== Terminal ====================== */
-    const outputDiv = document.getElementById('terminal-output');
-    const input = document.getElementById('command-input');
+  /* ===== Terminal ===== */
+  const terminalOutput = document.getElementById('terminal-output');
+  const terminalInput = document.getElementById('terminal-input');
 
-    // Command history
-    let commandHistory = [];
-    let historyIndex = -1;
+  const jokes = [
+    "Why do programmers prefer dark mode? Because light attracts bugs!",
+    "Why do Java developers wear glasses? Because they don't C#!",
+    "There are only 10 types of people: those who understand binary and those who don't.",
+  ];
 
-    // AI Chatbot commands
-    function aiChatResponse(input) {
-      input = input.toLowerCase();
-      if (input.includes('hello') || input.includes('hi')) {
-        return "Hello, user! Ready for some fun?";
-      }
-      if (input.includes('time')) {
-        return `Current time is ${new Date().toLocaleTimeString()}.`;
-      }
-      if (input.includes('joke')) {
-        const jokes = [
-          "Why do programmers prefer dark mode? Because light attracts bugs!",
-          "I told my computer I needed a break, and it said: 'No problem – I'll go to sleep.'",
-          "Why did the developer go broke? Because he used up all his cache."
-        ];
-        return jokes[Math.floor(Math.random() * jokes.length)];
-      }
-      if (input.includes('help')) {
-        return "Commands:\n- help\n- clear\n- time\n- joke\n- secret\n- echo [text]\n- switch [activity]";
-      }
-      if (input.startsWith('echo ')) {
-        return input.slice(5);
-      }
-      if (input === 'clear') {
-        outputDiv.textContent = '';
-        return "Screen cleared.";
-      }
-      if (input === 'secret') {
-        return "Try typing the Konami Code (↑↑↓↓←→←→BA) on your keyboard!";
-      }
-      if (input.startsWith('switch ')) {
-        let activity = input.slice(7).trim().toLowerCase();
-        const activityMap = {
-          terminal: 'tab-terminal',
-          matrix: 'tab-matrix',
-          starfield: 'tab-starfield',
-          glitch: 'tab-glitch',
-          colorpulse: 'tab-colorpulse'
-        };
-        if(activityMap[activity]){
-          document.getElementById(activityMap[activity]).click();
-          return `Switched to ${activity} activity.`;
-        }
-        return `Unknown activity: ${activity}`;
-      }
-      return "I don't understand. Type 'help' for commands.";
-    }
+  function terminalPrint(text) {
+    terminalOutput.textContent += text + "\n";
+    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+  }
 
-    input.addEventListener('keydown', e => {
-      if(e.key === 'Enter'){
-        let command = input.value.trim();
-        if(!command) return;
-        outputDiv.textContent += `>>> ${command}\n`;
-        commandHistory.push(command);
-        historyIndex = commandHistory.length;
-        input.value = '';
-        const response = aiChatResponse(command);
-        outputDiv.textContent += response + '\n';
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-      } else if (e.key === 'ArrowUp') {
-        if(historyIndex > 0){
-          historyIndex--;
-          input.value = commandHistory[historyIndex];
-        }
-        e.preventDefault();
-      } else if (e.key === 'ArrowDown') {
-        if(historyIndex < commandHistory.length - 1){
-          historyIndex++;
-          input.value = commandHistory[historyIndex];
-        } else {
-          historyIndex = commandHistory.length;
-          input.value = '';
-        }
-        e.preventDefault();
-      }
-    });
+  function showHelp() {
+    terminalPrint("Available commands:\nhelp - Show this help\n" +
+      "time - Show current time\n" +
+      "joke - Tell a joke\n" +
+      "secret - Reveal a secret\n" +
+      "clear - Clear the terminal\n" +
+      "switch [matrix|starfield|glitch|terminal] - Switch tab");
+  }
 
-    /* ================= Matrix Rain ================== */
-    const matrixCanvas = document.getElementById('matrix-canvas');
-    const matrixCtx = matrixCanvas.getContext('2d');
-    let matrixW, matrixH;
-    let matrixColumns;
-    let matrixDrops = [];
-    const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$%&*+-'.split('');
+  terminalPrint("Welcome to the Fun Tech Terminal!\nType 'help' for commands.");
 
-    function resizeMatrix(){
-      matrixW = matrixCanvas.clientWidth;
-      matrixH = matrixCanvas.clientHeight;
-      matrixCanvas.width = matrixW * devicePixelRatio;
-      matrixCanvas.height = matrixH * devicePixelRatio;
-      matrixCtx.setTransform(1,0,0,1,0,0);
-      matrixCtx.scale(devicePixelRatio, devicePixelRatio);
-      matrixColumns = Math.floor(matrixW / 20);
-      matrixDrops = [];
-      for(let i=0; i<matrixColumns; i++){
-        matrixDrops[i] = Math.random() * matrixH;
+  terminalInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const input = terminalInput.value.trim();
+      terminalInput.value = '';
+      terminalPrint("> " + input);
+
+      if (!input) return;
+
+      const [cmd, ...args] = input.split(' ');
+
+      switch (cmd.toLowerCase()) {
+        case 'help':
+          showHelp();
+          break;
+        case 'time':
+          terminalPrint(new Date().toLocaleString());
+          break;
+        case 'joke':
+          terminalPrint(jokes[Math.floor(Math.random() * jokes.length)]);
+          break;
+        case 'secret':
+          terminalPrint("You found the secret! 🎉");
+          break;
+        case 'clear':
+          terminalOutput.textContent = '';
+          break;
+        case 'switch':
+          const target = args[0];
+          if (!target) {
+            terminalPrint("Usage: switch [matrix|starfield|glitch|terminal]");
+            break;
+          }
+          const tabToSwitch = Array.from(tabs).find(t => t.getAttribute('data-target') === target.toLowerCase());
+          if (tabToSwitch) {
+            tabToSwitch.click();
+          } else {
+            terminalPrint(`Unknown tab: ${target}`);
+          }
+          break;
+        default:
+          terminalPrint(`Unknown command: ${cmd}`);
       }
     }
-    resizeMatrix();
-    window.addEventListener('resize', resizeMatrix);
+  });
 
-    function drawMatrix(){
-      matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-      matrixCtx.fillRect(0, 0, matrixW, matrixH);
+  /* ===== Matrix Rain ===== */
+  const matrixCanvas = document.getElementById('matrix-canvas');
+  const matrixCtx = matrixCanvas.getContext('2d');
+  const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$%&*+-'.split('');
+  let matrixColumns, matrixDrops = [];
 
-      matrixCtx.fillStyle = '#0F0';
-      matrixCtx.font = '20px monospace';
+  function resizeMatrix() {
+    matrixCanvas.width = matrixCanvas.clientWidth * devicePixelRatio;
+    matrixCanvas.height = matrixCanvas.clientHeight * devicePixelRatio;
+    matrixCtx.setTransform(1, 0, 0, 1, 0, 0);
+    matrixCtx.scale(devicePixelRatio, devicePixelRatio);
 
-      for(let i=0; i<matrixColumns; i++){
-        let text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-        matrixCtx.fillText(text, i * 20, matrixDrops[i]);
-        matrixDrops[i] += 20;
-        if(matrixDrops[i] > matrixH && Math.random() > 0.975){
-          matrixDrops[i] = 0;
-        }
-      }
+    matrixColumns = Math.floor(matrixCanvas.clientWidth / 20);
+    matrixDrops = [];
+    for (let i = 0; i < matrixColumns; i++) {
+      matrixDrops[i] = Math.random() * matrixCanvas.clientHeight;
+    }
+  }
+  resizeMatrix();
+  window.addEventListener('resize', resizeMatrix);
+
+  function drawMatrix() {
+    if (!document.getElementById('matrix').classList.contains('active')) {
       requestAnimationFrame(drawMatrix);
+      return; // skip drawing if tab not active
     }
+    matrixCtx.fillStyle = 'rgba(0,0,0,0.1)';
+    matrixCtx.fillRect(0, 0, matrixCanvas.clientWidth, matrixCanvas.clientHeight);
+    matrixCtx.fillStyle = '#0F0';
+    matrixCtx.font = '20px monospace';
 
-    /* ================ Starfield ================= */
-    const starfieldCanvas = document.getElementById('starfield-canvas');
-    const starCtx = starfieldCanvas.getContext('2d');
-    let starW, starH;
-    let stars = [];
-    const numStars = 200;
-    let velocityX = 0;
-    let velocityY = 0;
-    let centerX, centerY;
-
-    function resizeStarfield(){
-      starW = starfieldCanvas.clientWidth;
-      starH = starfieldCanvas.clientHeight;
-      starfieldCanvas.width = starW * devicePixelRatio;
-      starfieldCanvas.height = starH * devicePixelRatio;
-      starCtx.setTransform(1,0,0,1,0,0);
-      starCtx.scale(devicePixelRatio, devicePixelRatio);
-      centerX = starW / 2;
-      centerY = starH / 2;
+    for (let i = 0; i < matrixColumns; i++) {
+      const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+      matrixCtx.fillText(text, i * 20, matrixDrops[i]);
+      matrixDrops[i] += 20;
+      if (matrixDrops[i] > matrixCanvas.clientHeight && Math.random() > 0.975) {
+        matrixDrops[i] = 0;
+      }
     }
-    resizeStarfield();
-    window.addEventListener('resize', resizeStarfield);
+    requestAnimationFrame(drawMatrix);
+  }
+  drawMatrix();
 
-    function randomStar(){
-      return {
-        x: Math.random() * starW - centerX,
-        y: Math.random() * starH - centerY,
-        z: Math.random() * starW,
-      };
-    }
-    for(let i=0; i<numStars; i++){
+  /* ===== Starfield ===== */
+  const starCanvas = document.getElementById('starfield-canvas');
+  const starCtx = starCanvas.getContext('2d');
+
+  let starW, starH, centerX, centerY;
+  const numStars = 200;
+  const stars = [];
+
+  let velocityX = 0;
+  let velocityY = 0;
+
+  function randomStar() {
+    return {
+      x: Math.random() * starW - centerX,
+      y: Math.random() * starH - centerY,
+      z: Math.random() * starW,
+    };
+  }
+
+  function resizeStarfield() {
+    starCanvas.width = starCanvas.clientWidth * devicePixelRatio;
+    starCanvas.height = starCanvas.clientHeight * devicePixelRatio;
+    starCtx.setTransform(1, 0, 0, 1, 0, 0);
+    starCtx.scale(devicePixelRatio, devicePixelRatio);
+
+    starW = starCanvas.clientWidth;
+    starH = starCanvas.clientHeight;
+    centerX = starW / 2;
+    centerY = starH / 2;
+
+    stars.length = 0;
+    for (let i = 0; i < numStars; i++) {
       stars.push(randomStar());
     }
+  }
+  resizeStarfield();
+  window.addEventListener('resize', resizeStarfield);
 
-    function drawStarfield(){
-      starCtx.fillStyle = 'black';
-      starCtx.fillRect(0, 0, starW, starH);
-
-      starCtx.fillStyle = '#00ffea';
-      stars.forEach(s => {
-        s.z -= 4 + velocityY;
-        if(s.z <= 1){
-          Object.assign(s, randomStar());
-          s.z = starW;
-        }
-        const sx = centerX + (s.x / s.z) * starW;
-        const sy = centerY + (s.y / s.z) * starH;
-        const size = (1 - s.z / starW) * 3;
-        if(sx < 0 || sx > starW || sy < 0 || sy > starH) return;
-        starCtx.beginPath();
-        starCtx.arc(sx, sy, size, 0, 2 * Math.PI);
-        starCtx.fill();
-      });
+  function drawStarfield() {
+    if (!document.getElementById('starfield').classList.contains('active')) {
       requestAnimationFrame(drawStarfield);
+      return; // skip drawing if tab not active
     }
-    drawStarfield();
+    starCtx.fillStyle = 'black';
+    starCtx.fillRect(0, 0, starW, starH);
 
-    // Controls for starfield velocity
-    window.addEventListener('mousemove', e => {
-      const rect = starfieldCanvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
-      velocityX = (mx - starW/2) * 0.001;
-      velocityY = (my - starH/2) * 0.001;
-    });
-    window.addEventListener('keydown', e => {
-      switch(e.key){
-        case 'ArrowUp': velocityY -= 0.005; break;
-        case 'ArrowDown': velocityY += 0.005; break;
-        case 'ArrowLeft': velocityX -= 0.005; break;
-        case 'ArrowRight': velocityX += 0.005; break;
+    starCtx.fillStyle = `hsl(${hueRange.value}, ${satRange.value}%, ${lightRange.value}%)`;
+    stars.forEach(s => {
+      s.z -= 4 + velocityY;
+      if (s.z <= 1) {
+        Object.assign(s, randomStar());
+        s.z = starW;
       }
+      const sx = centerX + (s.x / s.z) * starW;
+      const sy = centerY + (s.y / s.z) * starH;
+      const size = (1 - s.z / starW) * 3;
+      if (sx < 0 || sx > starW || sy < 0 || sy > starH) return;
+      starCtx.beginPath();
+      starCtx.arc(sx, sy, size, 0, 2 * Math.PI);
+      starCtx.fill();
     });
+    requestAnimationFrame(drawStarfield);
+  }
+  drawStarfield();
 
-    /* =============== Glitch Text =============== */
-    const glitchInput = document.getElementById('glitch-input');
-    const glitchOutput = document.getElementById('glitch-output');
-    const glitchChars = ['█','▓','▒','░','@','#','$','%','&','?'];
+  // Mouse controls for starfield velocity
+  starCanvas.addEventListener('mousemove', (e) => {
+    const rect = starCanvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    velocityX = (mx - starW / 2) * 0.001;
+    velocityY = (my - starH / 2) * 0.001;
+  });
 
-    function glitchify(text){
-      let output = '';
-      for(let c of text){
-        if(Math.random() < 0.3 && c !== ' '){
-          output += glitchChars[Math.floor(Math.random() * glitchChars.length)];
-        } else {
-          output += c;
-        }
-      }
-      return output;
+  window.addEventListener('keydown', (e) => {
+    switch (e.key) {
+      case 'ArrowUp': velocityY -= 0.005; break;
+      case 'ArrowDown': velocityY += 0.005; break;
+      case 'ArrowLeft': velocityX -= 0.005; break;
+      case 'ArrowRight': velocityX += 0.005; break;
     }
-    glitchInput.addEventListener('input', () => {
-      glitchOutput.textContent = glitchify(glitchInput.value);
-    });
+  });
 
-    /* ============= Color Pulse Background =========== */
-    const hueRange = document.getElementById('hue-range');
-    const satRange = document.getElementById('saturation-range');
-    const lightRange = document.getElementById('lightness-range');
-    const speedRange = document.getElementById('speed-range');
-    const hueVal = document.getElementById('hue-val');
-    const satVal = document.getElementById('sat-val');
-    const lightVal = document.getElementById('light-val');
-    const speedVal = document.getElementById('speed-val');
+  /* ===== Glitch Text ===== */
+  const glitchTextarea = document.getElementById('glitch-textarea');
+  const glitchOutput = document.getElementById('glitch-output');
+  const glitchChars = ['█', '▓', '▒', '░', '@', '#', '$', '%', '&', '?'];
 
-    let pulseStart = performance.now();
-
-    function updateBg(time){
-      const elapsed = (time - pulseStart) / 1000;
-      const speed = parseFloat(speedRange.value);
-      const hue = parseInt(hueRange.value);
-      const sat = parseInt(satRange.value);
-      const light = parseInt(lightRange.value);
-      hueVal.textContent = hue;
-      satVal.textContent = sat;
-      lightVal.textContent = light;
-      speedVal.textContent = speed;
-
-      const pulse = Math.sin(elapsed * speed) * 20 + light;
-      document.body.style.background = `hsl(${hue}, ${sat}%, ${pulse}%)`;
-      requestAnimationFrame(updateBg);
-    }
-    updateBg(pulseStart);
-
-    // Update sliders UI on input
-    [hueRange, satRange, lightRange, speedRange].forEach(el => {
-      el.addEventListener('input', () => {
-        // immediate update handled by updateBg
-      });
-    });
-
-    /* ===== Konami Code Easter Egg ===== */
-    const konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-    let konamiIndex = 0;
-
-    window.addEventListener('keydown', e => {
-      if(e.key.toLowerCase() === konamiSequence[konamiIndex].toLowerCase()){
-        konamiIndex++;
-        if(konamiIndex === konamiSequence.length){
-          // Trigger Easter Egg - flash glitch effect on header
-          const header = document.querySelector('header');
-          let flashes = 0;
-          function flashGlitch(){
-            header.classList.toggle('glitch');
-            flashes++;
-            if(flashes < 10){
-              setTimeout(flashGlitch, 200);
-            } else {
-              header.classList.add('glitch');
-            }
-          }
-          flashGlitch();
-          konamiIndex = 0;
-        }
+  function glitchify(text) {
+    let output = '';
+    for (let c of text) {
+      if (Math.random() < 0.3 && c !== ' ') {
+        output += glitchChars[Math.floor(Math.random() * glitchChars.length)];
       } else {
-        konamiIndex = 0;
+        output += c;
       }
-    });
+    }
+    return output;
+  }
 
-  })();
+  glitchTextarea.addEventListener('input', () => {
+    glitchOutput.textContent = glitchify(glitchTextarea.value);
+  });
+
+  /* ===== Color Pulse Background ===== */
+  const hueRange = document.getElementById('hue-range');
+  const satRange = document.getElementById('sat-range');
+  const lightRange = document.getElementById('light-range');
+  const speedRange = document.getElementById('speed-range');
+  const hueVal = document.getElementById('hue-val');
+  const satVal = document.getElementById('sat-val');
+  const lightVal = document.getElementById('light-val');
+  const speedVal = document.getElementById('speed-val');
+
+  let pulseStart = performance.now();
+
+  function updateBg(time) {
+    const elapsed = (time - pulseStart) / 1000;
+    const speed = parseFloat(speedRange.value);
+    const hue = parseInt(hueRange.value);
+    const sat = parseInt(satRange.value);
+    const light = parseInt(lightRange.value);
+
+    hueVal.textContent = hue;
+    satVal.textContent = sat;
+    lightVal.textContent = light;
+    speedVal.textContent = speed.toFixed(1);
+
+    const pulse = Math.min(Math.max(Math.sin(elapsed * speed) * 20 + light, 0), 100);
+
+    document.body.style.background = `hsl(${hue}, ${sat}%, ${pulse}%)`;
+    requestAnimationFrame(updateBg);
+  }
+  updateBg(pulseStart);
+
+})();
 </script>
 
 </body>
