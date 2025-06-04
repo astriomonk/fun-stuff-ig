@@ -1,503 +1,346 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Futuristic Tech Hub</title>
-  <style>
-    /* Reset & base */
-    * {
-      box-sizing: border-box;
-    }
-    body, html {
-      margin: 0; padding: 0; height: 100%;
-      font-family: 'Orbitron', monospace, monospace;
-      background: #000014;
-      color: #00eaff;
-      overflow: hidden;
-      user-select: none;
-    }
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
-    #container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    header {
-      background: linear-gradient(90deg, #0ff 10%, #a0f 90%);
-      display: flex;
-      gap: 12px;
-      padding: 8px 16px;
-      box-shadow: 0 0 15px #0ff;
-      user-select: none;
-    }
-    button.tab-button {
-      flex: 1;
-      background: transparent;
-      border: 2px solid #00eaff;
-      color: #00eaff;
-      font-weight: 700;
-      font-size: 1.1rem;
-      padding: 10px 0;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s, box-shadow 0.3s;
-      text-shadow: 0 0 8px #00eaff;
-    }
-    button.tab-button:hover {
-      background: #00eaff22;
-      box-shadow: 0 0 12px #00eaff;
-    }
-    button.tab-button.active {
-      background: #00eaff;
-      color: #000014;
-      box-shadow: 0 0 30px #00eaff;
-    }
-
-    main {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
-    .activity {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      display: none;
-      padding: 12px 20px;
-      box-sizing: border-box;
-      background: rgba(0, 14, 30, 0.75);
-      border-radius: 0 0 20px 20px;
-      color: #00eaff;
-      text-shadow: 0 0 6px #00eaff;
-    }
-    .activity.active {
-      display: block;
-    }
-
-    /* Terminal */
-    #terminal {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      font-size: 17px;
-    }
-    #terminal-output {
-      flex: 1;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      padding-right: 10px;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-    #terminal-input {
-      background: #001022;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 15px;
-      color: #00eaff;
-      font-family: 'Orbitron', monospace;
-      font-size: 18px;
-      box-shadow: 0 0 12px #00eaff88 inset;
-      outline: none;
-      caret-color: #00eaff;
-      transition: box-shadow 0.3s ease;
-    }
-    #terminal-input:focus {
-      box-shadow: 0 0 18px #00ffffcc inset;
-    }
-
-    /* Canvas for Matrix and Starfield */
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      border-radius: 0 0 20px 20px;
-      background: transparent;
-      image-rendering: pixelated;
-    }
-
-    /* Color pulse controls in starfield */
-    #color-controls {
-      position: absolute;
-      bottom: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 700px;
-      background: #001522bb;
-      padding: 15px 25px;
-      border-radius: 20px;
-      box-shadow: 0 0 15px #00eaff88;
-      user-select: text;
-      color: #00eaff;
-      font-weight: 600;
-      font-size: 14px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-    #color-controls label {
-      flex: 1 1 100%;
-      text-align: center;
-      user-select: none;
-    }
-    #color-controls input[type="range"] {
-      flex: 1 1 45%;
-      -webkit-appearance: none;
-      height: 8px;
-      border-radius: 8px;
-      background: #003355;
-      outline: none;
-      cursor: pointer;
-      box-shadow: 0 0 8px #00eaffbb inset;
-      transition: box-shadow 0.3s;
-    }
-    #color-controls input[type="range"]:hover {
-      box-shadow: 0 0 12px #00ffffee inset;
-    }
-
-    /* Glitch text */
-    #glitch-textarea {
-      width: 100%;
-      height: 70%;
-      background: #001522;
-      color: #00eaff;
-      border: none;
-      border-radius: 15px;
-      font-family: 'Orbitron', monospace;
-      font-size: 20px;
-      padding: 15px 20px;
-      resize: none;
-      box-shadow: 0 0 20px #00eaff88 inset;
-      outline: none;
-      caret-color: #00eaff;
-      margin-bottom: 10px;
-      user-select: text;
-    }
-    #glitch-output {
-      white-space: pre-wrap;
-      font-family: 'Orbitron', monospace;
-      font-size: 28px;
-      text-shadow:
-        0 0 5px #00eaff,
-        0 0 10px #00eaff,
-        0 0 20px #00eaff;
-      min-height: 140px;
-      padding: 10px 15px;
-      border-radius: 15px;
-      background: #001522aa;
-      box-shadow: 0 0 30px #00eaffbb inset;
-      user-select: none;
-      line-height: 1.25;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cyberpunk Terminal + Activities</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  body {
+    margin: 0; padding: 0; background: #000;
+    font-family: 'Share Tech Mono', monospace;
+    color: #0f0;
+    overflow: hidden;
+  }
+  header {
+    display: flex; background: #020;
+    border-bottom: 1px solid #0f0;
+  }
+  header button {
+    flex: 1;
+    background: #000;
+    color: #0f0;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-right: 1px solid #0f0;
+    transition: background 0.3s;
+  }
+  header button:last-child { border-right: none; }
+  header button.active, header button:hover {
+    background: #0f0;
+    color: #000;
+  }
+  main {
+    position: relative;
+    height: calc(100vh - 42px);
+    background: #000;
+    overflow: hidden;
+  }
+  /* Terminal */
+  #terminal {
+    padding: 20px;
+    height: 100%;
+    box-sizing: border-box;
+    background: #000;
+    overflow-y: auto;
+    color: #0f0;
+  }
+  #terminal-output {
+    white-space: pre-wrap;
+    margin-bottom: 10px;
+  }
+  #terminal-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-top: 1px solid #0f0;
+    padding: 10px;
+    color: #0f0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    outline: none;
+  }
+  /* Matrix canvas */
+  #matrix-canvas {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0;
+    background: black;
+  }
+  /* Activities container */
+  .activity {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000;
+    color: #0f0;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: none;
+    z-index: 1;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .activity.active { display: block; }
+  /* Neon text effect */
+  .neon {
+    text-shadow:
+      0 0 5px #0f0,
+      0 0 10px #0f0,
+      0 0 20px #0f0,
+      0 0 40px #0f0;
+  }
+</style>
 </head>
 <body>
-  <div id="container">
-    <header>
-      <button class="tab-button active" data-target="terminal">TERMINAL</button>
-      <button class="tab-button" data-target="matrix">MATRIX RAIN</button>
-      <button class="tab-button" data-target="starfield">STARFIELD</button>
-      <button class="tab-button" data-target="glitch">GLITCH TEXT</button>
-    </header>
-    <main>
-      <!-- Terminal -->
-      <section id="terminal" class="activity active" tabindex="0" aria-label="Terminal tab">
-        <div id="terminal-output" aria-live="polite" aria-atomic="false" role="log"></div>
-        <input id="terminal-input" autocomplete="off" aria-label="Terminal command input" placeholder="Enter command..." />
-      </section>
 
-      <!-- Matrix Rain -->
-      <section id="matrix" class="activity" aria-label="Matrix rain animation tab">
-        <canvas id="matrix-canvas" aria-hidden="true"></canvas>
-      </section>
+<header>
+  <button data-tab="terminal" class="active">Terminal</button>
+  <button data-tab="matrix">Matrix Rain</button>
+  <button data-tab="clock">Clock & Date</button>
+  <button data-tab="quotes">Quotes</button>
+  <button data-tab="colorpicker">Color Picker</button>
+</header>
 
-      <!-- Starfield -->
-      <section id="starfield" class="activity" aria-label="Starfield animation tab">
-        <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-        <div id="color-controls" aria-label="Starfield background color controls">
-          <label for="hue-range">Hue: <span id="hue-val">180</span></label>
-          <input type="range" id="hue-range" min="0" max="360" value="180" />
-          <label for="sat-range">Saturation (%): <span id="sat-val">100</span></label>
-          <input type="range" id="sat-range" min="0" max="100" value="100" />
-          <label for="light-range">Lightness (%): <span id="light-val">20</span></label>
-          <input type="range" id="light-range" min="0" max="100" value="20" />
-          <label for="speed-range">Pulse Speed: <span id="speed-val">2.0</span></label>
-          <input type="range" id="speed-range" min="0" max="10" step="0.1" value="2" />
-        </div>
-      </section>
+<main>
+  <!-- Terminal Activity -->
+  <section id="terminal" class="activity active">
+    <div id="terminal-output" aria-live="polite"></div>
+    <input id="terminal-input" autocomplete="off" placeholder="Type a command (help)" />
+  </section>
 
-      <!-- Glitch Text -->
-      <section id="glitch" class="activity" aria-label="Glitch text generator tab">
-        <textarea id="glitch-textarea" placeholder="Type here to glitch the text..." aria-label="Text input for glitch effect"></textarea>
-        <pre id="glitch-output" aria-live="polite" aria-atomic="true"></pre>
-      </section>
-    </main>
-  </div>
+  <!-- Matrix Rain Activity -->
+  <section id="matrix" class="activity">
+    <canvas id="matrix-canvas"></canvas>
+  </section>
 
-  <script>
-    (() => {
-      // Tab switching
-      const tabs = document.querySelectorAll('.tab-button');
-      const activities = document.querySelectorAll('.activity');
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          const target = tab.getAttribute('data-target');
-          activities.forEach(act => {
-            act.classList.toggle('active', act.id === target);
-          });
-          tabs.forEach(t => t.classList.toggle('active', t === tab));
-          // Focus terminal input if terminal tab
-          if (target === 'terminal') {
-            setTimeout(() => terminalInput.focus(), 100);
-          }
-        });
+  <!-- Clock & Date Activity -->
+  <section id="clock" class="activity">
+    <h1 class="neon" id="time"></h1>
+    <h2 class="neon" id="date"></h2>
+  </section>
+
+  <!-- Quotes Activity -->
+  <section id="quotes" class="activity">
+    <h2 class="neon">Random Quotes</h2>
+    <blockquote id="quote-text" style="font-size:1.2em;"></blockquote>
+    <button id="new-quote" style="margin-top:20px; background:#0f0; border:none; padding:10px; cursor:pointer;">New Quote</button>
+  </section>
+
+  <!-- Color Picker Activity -->
+  <section id="colorpicker" class="activity">
+    <h2 class="neon">Neon Color Picker</h2>
+    <input type="color" id="color-input" value="#00ff00" style="width:100%; height:50px; border:none; outline:none; cursor:pointer;" />
+    <p style="margin-top:20px;">Change background and text neon color dynamically.</p>
+  </section>
+</main>
+
+<script>
+  // Tabs switching
+  const buttons = document.querySelectorAll('header button');
+  const activities = document.querySelectorAll('.activity');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      button.classList.add('active');
+      const tab = button.getAttribute('data-tab');
+      activities.forEach(act => {
+        act.classList.toggle('active', act.id === tab);
       });
+      // If matrix tab selected, resize canvas
+      if(tab === 'matrix') initMatrix();
+    });
+  });
 
-      /* ===== Terminal ===== */
-      const terminalOutput = document.getElementById('terminal-output');
-      const terminalInput = document.getElementById('terminal-input');
+  // Terminal commands & interaction
+  const terminalInput = document.getElementById('terminal-input');
+  const terminalOutput = document.getElementById('terminal-output');
 
-      const jokes = [
-        "Why do programmers prefer dark mode? Because light attracts bugs!",
-        "Why do Java developers wear glasses? Because they don't C#!",
-        "There are only 10 types of people: those who understand binary and those who don't.",
-        "Debugging: Removing the needles from the haystack.",
-      ];
+  function addTerminalOutput(text) {
+    terminalOutput.textContent += text + '\n';
+    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+  }
 
-      function terminalPrint(text, newline = true) {
-        terminalOutput.textContent += text + (newline ? "\n" : "");
-        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+  function showHelp() {
+    addTerminalOutput(
+      'Commands:\n' +
+      'help - Show this message\n' +
+      'time - Show current time\n' +
+      'date - Show current date\n' +
+      'clear - Clear terminal\n' +
+      'switch [tab] - Switch to tab (terminal, matrix, clock, quotes, colorpicker)\n' +
+      'quote - Show random quote\n'
+    );
+  }
+
+  const quotes = [
+    "The future belongs to those who believe in the beauty of their dreams. — Eleanor Roosevelt",
+    "Stay hungry, stay foolish. — Steve Jobs",
+    "I think, therefore I am. — René Descartes",
+    "The only limit to our realization of tomorrow is our doubts of today. — Franklin D. Roosevelt",
+    "To be, or not to be, that is the question. — William Shakespeare"
+  ];
+
+  function getRandomQuote() {
+    return quotes[Math.floor(Math.random() * quotes.length)];
+  }
+
+  terminalInput.addEventListener('keydown', e => {
+    if(e.key === 'Enter') {
+      const input = terminalInput.value.trim();
+      addTerminalOutput('> ' + input);
+      if (!input) {
+        terminalInput.value = '';
+        return;
       }
+      const args = input.split(' ');
+      const cmd = args[0].toLowerCase();
 
-      function showHelp() {
-        terminalPrint(
-          "Available commands:\n" +
-          "help       - Show this help message\n" +
-          "time       - Show current time\n" +
-          "joke       - Tell a random tech joke\n" +
-          "secret     - Reveal a secret message\n" +
-          "clear      - Clear the terminal\n" +
-          "switch [terminal|matrix|starfield|glitch] - Switch tab"
-        );
-      }
-
-      terminalPrint("⚡ Welcome to the Futuristic Tech Hub! ⚡");
-      terminalPrint("Type 'help' for a list of commands.\n");
-
-      terminalInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          const input = terminalInput.value.trim();
-          terminalInput.value = '';
-          terminalPrint("> " + input);
-          if (!input) return;
-
-          const [cmd, ...args] = input.split(' ');
-          switch (cmd.toLowerCase()) {
-            case 'help':
-              showHelp();
-              break;
-            case 'time':
-              terminalPrint(new Date().toLocaleString());
-              break;
-            case 'joke':
-              terminalPrint(jokes[Math.floor(Math.random() * jokes.length)]);
-              break;
-            case 'secret':
-              terminalPrint("💡 The future is coded in JavaScript!");
-              break;
-            case 'clear':
-              terminalOutput.textContent = '';
-              break;
-            case 'switch':
-              const target = args[0]?.toLowerCase();
-              if (!target || !['terminal', 'matrix', 'starfield', 'glitch'].includes(target)) {
-                terminalPrint("Usage: switch [terminal|matrix|starfield|glitch]");
-                break;
-              }
-              const targetTab = [...tabs].find(t => t.getAttribute('data-target') === target);
-              if (targetTab) targetTab.click();
-              break;
-            default:
-              terminalPrint(`Unknown command: ${cmd}`);
+      switch(cmd) {
+        case 'help':
+          showHelp();
+          break;
+        case 'time':
+          addTerminalOutput(new Date().toLocaleTimeString());
+          break;
+        case 'date':
+          addTerminalOutput(new Date().toLocaleDateString());
+          break;
+        case 'clear':
+          terminalOutput.textContent = '';
+          break;
+        case 'switch':
+          if(args[1]) {
+            const targetTab = args[1].toLowerCase();
+            const btn = [...buttons].find(b => b.getAttribute('data-tab') === targetTab);
+            if(btn) {
+              btn.click();
+              addTerminalOutput(`Switched to ${targetTab} tab.`);
+            } else {
+              addTerminalOutput(`Unknown tab "${targetTab}".`);
+            }
+          } else {
+            addTerminalOutput('Usage: switch [tab]');
           }
-        }
-      });
-
-      /* ===== Matrix Rain ===== */
-      const matrixCanvas = document.getElementById('matrix-canvas');
-      const matrixCtx = matrixCanvas.getContext('2d');
-      const matrixChars = 'アァカサタナハマヤャラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@$%&*+-'.split('');
-      let matrixColumns;
-      let matrixDrops = [];
-
-      function resizeMatrix() {
-        matrixCanvas.width = matrixCanvas.clientWidth * devicePixelRatio;
-        matrixCanvas.height = matrixCanvas.clientHeight * devicePixelRatio;
-        matrixCtx.setTransform(1, 0, 0, 1, 0, 0);
-        matrixCtx.scale(devicePixelRatio, devicePixelRatio);
-
-        matrixColumns = Math.floor(matrixCanvas.clientWidth / 18);
-        matrixDrops = [];
-        for (let i = 0; i < matrixColumns; i++) {
-          matrixDrops[i] = Math.random() * matrixCanvas.clientHeight;
-        }
+          break;
+        case 'quote':
+          addTerminalOutput(getRandomQuote());
+          break;
+        default:
+          addTerminalOutput(`Unknown command: ${cmd}. Type "help" for commands.`);
       }
-      resizeMatrix();
-      window.addEventListener('resize', resizeMatrix);
+      terminalInput.value = '';
+    }
+  });
 
-      function drawMatrix() {
-        if (!document.getElementById('matrix').classList.contains('active')) {
-          requestAnimationFrame(drawMatrix);
-          return;
-        }
-        matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-        matrixCtx.fillRect(0, 0, matrixCanvas.clientWidth, matrixCanvas.clientHeight);
+  // Initialize terminal with welcome & help
+  addTerminalOutput('Welcome to Cyberpunk Terminal!\nType "help" for commands.');
 
-        matrixCtx.fillStyle = '#00eaff';
-        matrixCtx.shadowColor = '#00eaff';
-        matrixCtx.shadowBlur = 10;
-        matrixCtx.font = '18px monospace';
+  // MATRIX RAIN FIXED
+  const matrixCanvas = document.getElementById('matrix-canvas');
+  const ctx = matrixCanvas.getContext('2d');
+  let matrixWidth, matrixHeight;
+  let columns;
+  let drops = [];
 
-        for (let i = 0; i < matrixColumns; i++) {
-          const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-          matrixCtx.fillText(text, i * 18, matrixDrops[i]);
-          matrixDrops[i] += 20;
-          if (matrixDrops[i] > matrixCanvas.clientHeight && Math.random() > 0.975) {
-            matrixDrops[i] = 0;
-          }
-        }
-        requestAnimationFrame(drawMatrix);
+  function initMatrix() {
+    matrixWidth = matrixCanvas.width = matrixCanvas.clientWidth;
+    matrixHeight = matrixCanvas.height = matrixCanvas.clientHeight;
+    columns = Math.floor(matrixWidth / 20);
+    drops = [];
+    for(let i = 0; i < columns; i++) {
+      drops[i] = Math.random() * matrixHeight; // random start y position
+    }
+  }
+
+  function drawMatrix() {
+    // Only draw if matrix tab active
+    if(!document.getElementById('matrix').classList.contains('active')) {
+      requestAnimationFrame(drawMatrix);
+      return;
+    }
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // fade effect
+    ctx.fillRect(0, 0, matrixWidth, matrixHeight);
+
+    ctx.fillStyle = '#0F0'; // green text
+    ctx.font = '20px monospace';
+
+    for(let i = 0; i < drops.length; i++) {
+      const x = i * 20;
+      const y = drops[i] * 20;
+      const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+      ctx.fillText(text, x, y);
+
+      if(y > matrixHeight && Math.random() > 0.975) {
+        drops[i] = 0;
+      } else {
+        drops[i] += 1;
       }
-      drawMatrix();
+    }
+    requestAnimationFrame(drawMatrix);
+  }
 
-      /* ===== Starfield ===== */
-      const starCanvas = document.getElementById('starfield-canvas');
-      const starCtx = starCanvas.getContext('2d');
-      let starW, starH, centerX, centerY;
-      const numStars = 250;
-      const stars = [];
-      let velocityX = 0;
-      let velocityY = 0;
+  // Start matrix only if matrix tab is active initially
+  if(document.getElementById('matrix').classList.contains('active')) {
+    initMatrix();
+    drawMatrix();
+  }
 
-      function randomStar() {
-        return {
-          x: Math.random() * starW - centerX,
-          y: Math.random() * starH - centerY,
-          z: Math.random() * starW,
-          size: Math.random() * 1.2 + 0.5
-        };
-      }
+  // If user switches to matrix tab, init & draw it
+  // Already handled on tab click above with initMatrix()
 
-      function resizeStarfield() {
-        starCanvas.width = starCanvas.clientWidth * devicePixelRatio;
-        starCanvas.height = starCanvas.clientHeight * devicePixelRatio;
-        starCtx.setTransform(1, 0, 0, 1, 0, 0);
-        starCtx.scale(devicePixelRatio, devicePixelRatio);
+  // CLOCK & DATE
+  function updateClock() {
+    const timeEl = document.getElementById('time');
+    const dateEl = document.getElementById('date');
+    const now = new Date();
+    timeEl.textContent = now.toLocaleTimeString();
+    dateEl.textContent = now.toLocaleDateString(undefined, {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
 
-        starW = starCanvas.clientWidth;
-        starH = starCanvas.clientHeight;
-        centerX = starW / 2;
-        centerY = starH / 2;
+  // QUOTES
+  const quoteText = document.getElementById('quote-text');
+  const newQuoteBtn = document.getElementById('new-quote');
 
-        stars.length = 0;
-        for (let i = 0; i < numStars; i++) {
-          stars.push(randomStar());
-        }
-      }
-      resizeStarfield();
-      window.addEventListener('resize', resizeStarfield);
+  function showRandomQuote() {
+    quoteText.textContent = getRandomQuote();
+  }
+  newQuoteBtn.addEventListener('click', showRandomQuote);
+  showRandomQuote();
 
-      // Color controls elements
-      const hueRange = document.getElementById('hue-range');
-      const satRange = document.getElementById('sat-range');
-      const lightRange = document.getElementById('light-range');
-      const speedRange = document.getElementById('speed-range');
-      const hueVal = document.getElementById('hue-val');
-      const satVal = document.getElementById('sat-val');
-      const lightVal = document.getElementById('light-val');
-      const speedVal = document.getElementById('speed-val');
+  // COLOR PICKER
+  const colorInput = document.getElementById('color-input');
+  colorInput.addEventListener('input', () => {
+    const color = colorInput.value;
+    // Change body background to dark with color glow
+    document.body.style.background = color + '10'; // light alpha
+    // Change neon text color dynamically (override .neon)
+    document.querySelectorAll('.neon').forEach(el => {
+      el.style.textShadow = `
+        0 0 5px ${color},
+        0 0 10px ${color},
+        0 0 20px ${color},
+        0 0 40px ${color}
+      `;
+      el.style.color = color;
+    });
+    // Also change terminal input border and buttons highlight
+    document.querySelectorAll('header button').forEach(btn => {
+      btn.style.borderColor = color;
+      if(btn.classList.contains('active')) btn.style.background = color;
+      else btn.style.color = color;
+    });
+    terminalInput.style.borderTopColor = color;
+    terminalInput.style.color = color;
+  });
 
-      let pulseStart = performance.now();
+  // Initialize color picker style
+  colorInput.dispatchEvent(new Event('input'));
+</script>
 
-      function drawStarfield(time) {
-        if (!document.getElementById('starfield').classList.contains('active')) {
-          requestAnimationFrame(drawStarfield);
-          return;
-        }
-        starCtx.clearRect(0, 0, starW, starH);
-
-        // Pulse background color (handled in body background)
-        const elapsed = (time - pulseStart) / 1000;
-        const speed = parseFloat(speedRange.value);
-        const hue = parseInt(hueRange.value);
-        const sat = parseInt(satRange.value);
-        const light = parseInt(lightRange.value);
-
-        hueVal.textContent = hue;
-        satVal.textContent = sat;
-        lightVal.textContent = light;
-        speedVal.textContent = speed.toFixed(1);
-
-        const pulse = Math.min(Math.max(Math.sin(elapsed * speed) * 20 + light, 0), 100);
-        document.body.style.backgroundColor = `hsl(${hue}, ${sat}%, ${pulse}%)`;
-
-        starCtx.fillStyle = `hsl(${hue}, ${sat}%, 90%)`;
-        starCtx.shadowColor = `hsl(${hue}, ${sat}%, 90%)`;
-        starCtx.shadowBlur = 8;
-
-        stars.forEach(s => {
-          s.z -= 4 + velocityY;
-          if (s.z <= 1) {
-            Object.assign(s, randomStar());
-            s.z = starW;
-          }
-          const sx = centerX + (s.x / s.z) * starW;
-          const sy = centerY + (s.y / s.z) * starH;
-          if (sx < 0 || sx >= starW || sy < 0 || sy >= starH) return;
-          starCtx.beginPath();
-          starCtx.arc(sx, sy, s.size * (1 - s.z / starW) * 2, 0, 2 * Math.PI);
-          starCtx.fill();
-        });
-
-        requestAnimationFrame(drawStarfield);
-      }
-      drawStarfield();
-
-      hueRange.addEventListener('input', () => {});
-      satRange.addEventListener('input', () => {});
-      lightRange.addEventListener('input', () => {});
-      speedRange.addEventListener('input', () => {});
-
-      /* ===== Glitch Text ===== */
-      const glitchInput = document.getElementById('glitch-textarea');
-      const glitchOutput = document.getElementById('glitch-output');
-
-      const glitchChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?'.split('');
-
-      function glitchText(str) {
-        return str.split('').map(c => {
-          if (c === ' ') return ' ';
-          if (Math.random() < 0.3) {
-            return glitchChars[Math.floor(Math.random() * glitchChars.length)];
-          }
-          return c;
-        }).join('');
-      }
-
-      function updateGlitch() {
-        const input = glitchInput.value || 'TYPE TO GLITCH THE TEXT...';
-        glitchOutput.textContent = glitchText(input);
-      }
-
-      glitchInput.addEventListener('input', updateGlitch);
-      setInterval(updateGlitch, 120);
-
-      updateGlitch();
-
-    })();
-  </script>
 </body>
 </html>
