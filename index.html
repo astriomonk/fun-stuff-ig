@@ -1,233 +1,343 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>All-in-One Fun Hub</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #121212;
-    color: #eee;
-    margin: 0; padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  header {
-    background: #1f1f1f;
-    width: 100%;
-    padding: 1rem 0;
-    text-align: center;
-    font-size: 2rem;
-    letter-spacing: 3px;
-    color: #00d8ff;
-    user-select: none;
-  }
-  nav {
-    background: #222;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    padding: 0.5rem 0;
-  }
-  nav button {
-    background: #333;
-    border: none;
-    color: #00d8ff;
-    font-weight: 600;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  nav button:hover,
-  nav button.active {
-    background: #00d8ff;
-    color: #121212;
-  }
-  main {
-    max-width: 700px;
-    width: 90%;
-    margin: 20px 0 40px;
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 20px 30px;
-    box-shadow: 0 0 20px #00d8ff66;
-    min-height: 400px;
-  }
-  section {
-    display: none;
-  }
-  section.active {
-    display: block;
-  }
-  input, button, select, textarea {
-    font-family: inherit;
-    font-size: 1rem;
-    border-radius: 6px;
-    border: none;
-    padding: 8px;
-    margin: 5px 0 15px;
-  }
-  button.primary {
-    background: #00d8ff;
-    color: #121212;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  button.primary:hover {
-    background: #00b7cc;
-  }
-  .output {
-    margin-top: 10px;
-    min-height: 2rem;
-  }
-  ul {
-    padding-left: 20px;
-  }
-  a {
-    color: #00d8ff;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🖥️ High-Tech Fun Terminal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    /* Reset */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Share Tech Mono', monospace;
+      color: #00ffea;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+    header {
+      margin-top: 15px;
+      font-size: 2rem;
+      letter-spacing: 3px;
+      text-shadow:
+        0 0 5px #00ffd6,
+        0 0 10px #00ffd6,
+        0 0 20px #00ffd6,
+        0 0 40px #00ffd6;
+    }
+    #clock {
+      margin-top: 5px;
+      font-size: 1.2rem;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 8px #00ffc4;
+      font-weight: bold;
+    }
+    main {
+      margin-top: 20px;
+      background: #011e27;
+      width: 90vw;
+      max-width: 900px;
+      height: 65vh;
+      border-radius: 10px;
+      box-shadow:
+        0 0 15px #00ffea,
+        inset 0 0 20px #00ffea;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow: hidden;
+    }
+    #terminal {
+      flex: 1;
+      background: #021c27;
+      border-radius: 8px;
+      padding: 15px;
+      font-size: 1.1rem;
+      overflow-y: auto;
+      color: #00ffea;
+      text-shadow:
+        0 0 4px #00ffea,
+        0 0 8px #00ffea;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      box-shadow: inset 0 0 8px #00ffea;
+    }
+    #input-line {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+    }
+    #prompt {
+      font-weight: bold;
+      margin-right: 10px;
+      color: #00ffd6;
+      text-shadow: 0 0 6px #00ffd6;
+    }
+    #command-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #00ffc4;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.1rem;
+      outline: none;
+      border-bottom: 1px solid #00ffea;
+      padding: 5px 8px;
+      transition: border-color 0.3s ease;
+    }
+    #command-input:focus {
+      border-color: #00ffff;
+      box-shadow: 0 0 10px #00ffff;
+    }
+    .glitch {
+      position: relative;
+      color: #00ffea;
+      animation: glitch 2s infinite;
+    }
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+    }
+    .glitch::before {
+      animation: glitchTop 2s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+      color: #00ffff;
+      left: 2px;
+      text-shadow: -2px 0 #00ffff;
+      opacity: 0.8;
+    }
+    .glitch::after {
+      animation: glitchBot 2s infinite;
+      clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+      color: #00ff6a;
+      left: -2px;
+      text-shadow: 2px 0 #00ff6a;
+      opacity: 0.8;
+    }
+    @keyframes glitch {
+      0%, 100% {
+        text-shadow:
+          0 0 4px #00ffea,
+          0 0 8px #00ffea,
+          0 0 20px #00ffea;
+      }
+      50% {
+        text-shadow:
+          0 0 10px #00fff5,
+          0 0 30px #00fff5;
+      }
+    }
+    @keyframes glitchTop {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, -2px); }
+      40% { transform: translate(-2px, 2px); }
+      60% { transform: translate(2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+    }
+    @keyframes glitchBot {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(2px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      60% { transform: translate(-2px, 2px); }
+      80% { transform: translate(-2px, -2px); }
+    }
+    #output {
+      white-space: pre-wrap;
+      margin-top: 15px;
+      min-height: 120px;
+      overflow-y: auto;
+      background: #002634;
+      border-radius: 6px;
+      padding: 10px;
+      box-shadow: inset 0 0 10px #00ffea88;
+      color: #00ffea;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    #secret-glow {
+      position: fixed;
+      bottom: 15px;
+      right: 20px;
+      font-size: 1.4rem;
+      color: #00fff5;
+      opacity: 0.3;
+      user-select: none;
+      transition: opacity 0.5s;
+    }
+  </style>
 </head>
 <body>
 
-<header>ALL-IN-ONE FUN HUB</header>
-
-<nav>
-  <button data-target="game" class="active">Guess the Number</button>
-  <button data-target="jokes">Jokes</button>
-  <button data-target="riddles">Riddles</button>
-  <button data-target="quiz">Quiz</button>
-  <button data-target="facts">Facts</button>
-  <button data-target="adventure">Text Adventure</button>
-  <button data-target="challenges">Challenges</button>
-</nav>
+<header class="glitch" data-text="HIGH-TECH FUN TERMINAL">HIGH-TECH FUN TERMINAL</header>
+<div id="clock"></div>
 
 <main>
-  <!-- Guess the Number Game -->
-  <section id="game" class="active">
-    <h2>Guess the Number Game</h2>
-    <p>I'm thinking of a number between 1 and 100.</p>
-    <input type="number" id="guessInput" min="1" max="100" placeholder="Your guess" />
-    <button id="guessBtn" class="primary">Guess</button>
-    <div id="gameMessage" class="output"></div>
-  </section>
-
-  <!-- Joke Generator -->
-  <section id="jokes">
-    <h2>Joke Generator</h2>
-    <button id="newJoke" class="primary">Tell me a joke</button>
-    <div id="jokeOutput" class="output"></div>
-  </section>
-
-  <!-- Riddles -->
-  <section id="riddles">
-    <h2>Riddles</h2>
-    <button id="newRiddle" class="primary">Give me a riddle</button>
-    <div id="riddleQuestion" class="output" style="font-weight: bold;"></div>
-    <input type="text" id="riddleAnswer" placeholder="Type your answer here" />
-    <button id="checkRiddle" class="primary">Check Answer</button>
-    <div id="riddleFeedback" class="output"></div>
-  </section>
-
-  <!-- Quiz -->
-  <section id="quiz">
-    <h2>Quick Quiz</h2>
-    <div id="quizContainer"></div>
-    <button id="nextQuizQ" class="primary" style="display:none;">Next Question</button>
-    <div id="quizResult" class="output"></div>
-  </section>
-
-  <!-- Random Facts -->
-  <section id="facts">
-    <h2>Random Facts</h2>
-    <button id="newFact" class="primary">Give me a fact</button>
-    <div id="factOutput" class="output"></div>
-  </section>
-
-  <!-- Text Adventure -->
-  <section id="adventure">
-    <h2>Text Adventure</h2>
-    <div id="advText" style="min-height: 150px; white-space: pre-wrap; margin-bottom: 15px;"></div>
-    <div id="advChoices"></div>
-  </section>
-
-  <!-- Daily Challenges -->
-  <section id="challenges">
-    <h2>Daily Challenges</h2>
-    <button id="newChallenge" class="primary">Give me a challenge</button>
-    <div id="challengeOutput" class="output"></div>
-  </section>
+  <div id="terminal" aria-live="polite" aria-label="Terminal output">
+    <div>Welcome to the High-Tech Fun Terminal. Type <code>help</code> to get started.</div>
+    <div id="output"></div>
+  </div>
+  <div id="input-line">
+    <div id="prompt">&gt;&gt;&gt;</div>
+    <input type="text" id="command-input" autocomplete="off" aria-label="Command input" autofocus />
+  </div>
 </main>
 
+<div id="secret-glow" style="opacity:0;">✨</div>
+
 <script>
-(() => {
-  // Navigation logic
-  const navButtons = document.querySelectorAll('nav button');
-  const sections = document.querySelectorAll('main section');
-  navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      navButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const target = btn.dataset.target;
-      sections.forEach(sec => {
-        sec.classList.toggle('active', sec.id === target);
-      });
+  (() => {
+    const outputDiv = document.getElementById('output');
+    const input = document.getElementById('command-input');
+    const clockDiv = document.getElementById('clock');
+    const secretGlow = document.getElementById('secret-glow');
+
+    // Update clock every second
+    function updateClock() {
+      const now = new Date();
+      clockDiv.textContent = now.toLocaleTimeString();
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Scroll output to bottom
+    function scrollOutput() {
+      outputDiv.scrollTop = outputDiv.scrollHeight;
+    }
+
+    // Type out text letter by letter with delay
+    async function typeOut(text, delay = 25) {
+      for (let i = 0; i < text.length; i++) {
+        outputDiv.textContent += text[i];
+        scrollOutput();
+        await new Promise(r => setTimeout(r, delay));
+      }
+      outputDiv.textContent += '\n';
+      scrollOutput();
+    }
+
+    // Clear output function
+    function clearOutput() {
+      outputDiv.textContent = '';
+    }
+
+    // Fun AI chatbot basic responses
+    function aiChatResponse(input) {
+      input = input.toLowerCase();
+      if (input.includes('hello') || input.includes('hi')) {
+        return "Hello, user! Ready for some fun?";
+      }
+      if (input.includes('time')) {
+        return `Current time is ${new Date().toLocaleTimeString()}.`;
+      }
+      if (input.includes('joke')) {
+        const jokes = [
+          "Why do programmers prefer dark mode? Because light attracts bugs!",
+          "I told my computer I needed a break, and it said: 'No problem – I'll go to sleep.'",
+          "Why did the developer go broke? Because he used up all his cache."
+        ];
+        return jokes[Math.floor(Math.random() * jokes.length)];
+      }
+      if (input.includes('help')) {
+        return "Commands:\n- help\n- clear\n- time\n- joke\n- secret\n- echo [text]";
+      }
+      if (input.startsWith('echo ')) {
+        return input.slice(5);
+      }
+      if (input === 'clear') {
+        clearOutput();
+        return "Screen cleared.";
+      }
+      if (input === 'secret') {
+        return "Try typing the Konami Code...";
+      }
+      return "I don't understand. Type 'help' for commands.";
+    }
+
+    // Command history
+    let commandHistory = [];
+    let historyIndex = -1;
+
+    // Konami code detector (↑ ↑ ↓ ↓ ← → ← → b a)
+    const konami = [38,38,40,40,37,39,37,39,66,65];
+    let konamiIndex = 0;
+
+    window.addEventListener('keydown', (e) => {
+      if(e.keyCode === konami[konamiIndex]){
+        konamiIndex++;
+        if(konamiIndex === konami.length){
+          showSecret();
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = 0;
+      }
     });
-  });
 
-  // === Guess the Number Game ===
-  let secretNumber = Math.floor(Math.random() * 100) + 1;
-  let attempts = 0;
-  const guessInput = document.getElementById('guessInput');
-  const guessBtn = document.getElementById('guessBtn');
-  const gameMessage = document.getElementById('gameMessage');
-
-  guessBtn.addEventListener('click', () => {
-    const guess = Number(guessInput.value);
-    if (!guess || guess < 1 || guess > 100) {
-      gameMessage.textContent = 'Please enter a number between 1 and 100.';
-      return;
+    // Show secret easter egg effect
+    function showSecret() {
+      secretGlow.style.opacity = '1';
+      outputDiv.textContent += "\n🕹️ Konami Code activated! You unlocked the secret neon effect! 🕹️\n";
+      scrollOutput();
+      let hue = 0;
+      const interval = setInterval(() => {
+        document.body.style.background = `linear-gradient(135deg, hsl(${hue}, 70%, 20%), hsl(${(hue+40)%360}, 70%, 30%), hsl(${(hue+80)%360}, 70%, 40%))`;
+        hue = (hue + 1) % 360;
+      }, 60);
+      // Stop after 15 seconds
+      setTimeout(() => {
+        clearInterval(interval);
+        secretGlow.style.opacity = '0';
+        document.body.style.background = 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)';
+      }, 15000);
     }
-    attempts++;
-    if (guess === secretNumber) {
-      gameMessage.textContent = `🎉 Correct! You guessed the number in ${attempts} tries. Refresh page to play again!`;
-      guessBtn.disabled = true;
-      guessInput.disabled = true;
-    } else if (guess < secretNumber) {
-      gameMessage.textContent = 'Too low! Try again.';
-    } else {
-      gameMessage.textContent = 'Too high! Try again.';
-    }
-    guessInput.value = '';
-    guessInput.focus();
-  });
 
-  // === Joke Generator ===
-  const jokes = [
-    "Why don't scientists trust atoms? Because they make up everything!",
-    "Why did the scarecrow win an award? Because he was outstanding in his field!",
-    "Why don’t skeletons fight each other? They don’t have the guts.",
-    "I told my computer I needed a break, and it said 'No problem – I’ll go to sleep.'",
-    "Why did the math book look sad? Because it had too many problems."
-  ];
-  const newJokeBtn = document.getElementById('newJoke');
-  const jokeOutput = document.getElementById('jokeOutput');
-  newJokeBtn.addEventListener('click', () => {
-    const joke = jokes[Math.floor(Math.random() * jokes.length)];
-    jokeOutput.textContent = joke;
-  });
+    // Handle enter key on input
+    input.addEventListener('keydown', async (e) => {
+      if (e.key === 'Enter') {
+        let command = input.value.trim();
+        if (!command) return;
+        outputDiv.textContent += `>>> ${command}\n`;
+        scrollOutput();
+        commandHistory.push(command);
+        historyIndex = commandHistory.length;
+        input.value = '';
+        const response = aiChatResponse(command);
+        if (response instanceof Promise) {
+          await response;
+        }
+        outputDiv.textContent += response + "\n";
+        scrollOutput();
+      } else if (e.key === 'ArrowUp') {
+        // Navigate command history up
+        if (historyIndex > 0) {
+          historyIndex--;
+          input.value = commandHistory[historyIndex];
+        }
+        e.preventDefault();
+      } else if (e.key === 'ArrowDown') {
+        // Navigate command history down
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          input.value = commandHistory[historyIndex];
+        } else {
+          historyIndex = commandHistory.length;
+          input.value = '';
+        }
+        e.preventDefault();
+      }
+    });
 
-  // === Riddles ===
-  const riddles = [
-    {q: "What has keys but can't open locks?", a: "keyboard"},
-    {q: "What has hands but can't clap?", a: "clock"},
-    {q: "What runs but never walks?", a: "water"},
-    {q: "What has a head and a tail but no body?", a: "coin"},
-   
+  })();
+</script>
+
+</body>
+</html>
